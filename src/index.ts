@@ -1,20 +1,35 @@
 import { interpret, ICommand } from './interpret';
 
-export const initShell = () => execute;
+interface IConfig {
+    programs?: any[];
+}
 
-function execute(value: string): Promise<string> {
-    if (!value) return Promise.resolve('')
+type IResponse = ICommand | '';
 
-    const command = interpret(value);
+export const init = ({ programs= [] }: IConfig) => (value: string) => {
 
-    if (!command.program || command.program === '') {
-        return Promise.resolve('');
+    return decode(value).then(run);
+
+    function decode(val: string): Promise<IResponse> {
+        if (!val) return Promise.resolve('');
+
+        const command = interpret(val.replace(/\s+/g, ' '));
+        return Promise.resolve(command);
     }
 
-    return run(command);
-}
+    function run(command: IResponse): Promise<string> {
+        if (!command) return Promise.resolve('');
 
-// run the interperted command
-function run(command: ICommand): Promise<string> {
-    return Promise.resolve(command.value);
-}
+        if (!command.program || command.program === '') {
+            return Promise.resolve('');
+        }
+
+        const program = programs.find((prog) => prog.name === command.program);
+
+        if (!module) {
+            return Promise.resolve(`command not found: ${command.program}`);
+        }
+
+        return Promise.resolve(command.value);
+    }
+};
