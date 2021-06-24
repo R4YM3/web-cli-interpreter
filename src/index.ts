@@ -1,20 +1,20 @@
 import { interpret, ICommand } from './interpret';
 
-export const interpreter = () => {
-    return (value: string): string => {
-        if (!value) return '';
+export const initShell = () => execute;
 
-        const command = interpret(value);
+function execute(value: string): Promise<string> {
+    if (!value) return Promise.resolve('')
 
-        if (!command.program || command.program === '') {
-            return '';
-        }
+    const command = interpret(value);
 
-        return execute(command);
-    };
-};
+    if (!command.program || command.program === '') {
+        return Promise.resolve('');
+    }
+
+    return run(command);
+}
 
 // run the interperted command
-function execute(command: ICommand): string {
-    return command.value;
+function run(command: ICommand): Promise<string> {
+    return Promise.resolve(command.value);
 }
