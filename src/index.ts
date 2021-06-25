@@ -26,7 +26,7 @@ export const init = ({ programs= [] }: IConfig) => (value: string) => {
 
         const program = programs.find((prog) => prog.name === command.program);
 
-        if (!module) {
+        if (!program) {
             return Promise.resolve(`command not found: ${command.program}`);
         }
 
