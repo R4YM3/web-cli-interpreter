@@ -30,66 +30,98 @@ export class Program {
         this.indentifier = indentifier;
         this.description = description;
         this.version = version;
-        this.methods = [info(description), getVersion(version), help(), ...methods];
+
+        this.methods = [
+            help({
+                name: indentifier.name,
+                description,
+                version,
+                methods,
+            }),
+            ...methods,
+        ];
     }
 
     public execute(command: ICommand): Promise<string> {
-        if (!command.method) {
+        if (!command.method || !command.method.name) {
             const defaultMethod = getDefaultMethod(this.methods);
 
-            if (!defaultMethod) {
-                return Promise.resolve(`${command.program} is missing default method`);
+            if (defaultMethod) {
+                return defaultMethod.execute(command);
             }
 
-            return defaultMethod.execute(command);
+            const helpMethod = getMethod({
+                indentifier: 'help',
+                methods: this.methods,
+            });
+
+            if (helpMethod) {
+                return helpMethod.execute(command);
+            } else {
+                return Promise.resolve(`${command.program} is missing default method`);
+            }
         }
 
-        return Promise.resolve('TODO: methods not mapped yet');
+        const method = getMethod({
+            indentifier: command.method.name,
+            methods: this.methods,
+        });
+
+        if (!method) {
+            return Promise.resolve(`${command.program} method ${command.method.name} not found`);
+        }
+
+        return method.execute(command);
     }
 }
 
-function getDefaultMethod(methods: IProgramMethod[]):IProgramMethod|undefined {
+function getMethod({ indentifier, methods }: { indentifier: string; methods: IProgramMethod[] }) {
+    function isMethod(method: IProgramMethod): boolean {
+        return method.indentifier.name === indentifier || method.indentifier.abbreviation === indentifier;
+    }
+    return methods.find(isMethod);
+}
+
+function getDefaultMethod(methods: IProgramMethod[]): IProgramMethod | undefined {
     function isDefaultMethod(method: IProgramMethod): boolean {
         return method.default === true;
     }
     return methods.find(isDefaultMethod);
 }
 
-function info(description: string): IProgramMethod {
-    return {
-        indentifier: {
-            name: 'info',
-            abbreviation: 'i',
-        },
-        description: 'returns the description of the program',
-        execute() {
-            return Promise.resolve(description);
-        },
-    };
-}
-
-function getVersion(version: string): IProgramMethod {
-    return {
-        indentifier: {
-            name: 'version',
-            abbreviation: 'v',
-        },
-        description: 'returns the current version',
-        execute() {
-            return Promise.resolve(version);
-        },
-    };
-}
-
-function help(): IProgramMethod {
+function help({
+    name: programName,
+    description,
+    version,
+    methods,
+}: {
+    name: string;
+    description: string;
+    version: string;
+    methods: IProgramMethod[];
+}): IProgramMethod {
     return {
         indentifier: {
             name: 'help',
             abbreviation: 'h',
         },
-        description: 'program help',
+        description: 'A program which dentifies the current command line interface',
         execute() {
-            return Promise.resolve(`should return commands with names and abbreviations`);
+            let response: string;
+
+            response = `<p>
+                version: ${version}<br/>
+                description: ${description}
+            </p>
+            `;
+
+            methods.forEach((method) => {
+                const { name, abbreviation } = method.indentifier;
+
+                response = `${response}<br/> ${programName} ${name} : ${method.description}`;
+            });
+
+            return Promise.resolve(response);
         },
     };
 }
