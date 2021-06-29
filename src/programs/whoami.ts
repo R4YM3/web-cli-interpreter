@@ -7,7 +7,7 @@ export default ({ info }: { info: string }) => {
             name: 'whoami',
         },
         version: '1',
-        description: 'returns information about the current enviroment',
+        description: 'get information about the current enviroment',
         methods: [
             {
                 indentifier: {
