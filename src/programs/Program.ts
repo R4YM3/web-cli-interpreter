@@ -34,7 +34,7 @@ export class Program {
     }
 
     public execute(command: ICommand): Promise<string> {
-        if (!command.fn) {
+        if (!command.method) {
             const defaultMethod = getDefaultMethod(this.methods);
 
             if (!defaultMethod) {

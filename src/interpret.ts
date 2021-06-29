@@ -4,16 +4,16 @@
 export function interpret(value: string):ICommand {
   const parameters = value.split(' ') as string[];
   const program = parameters.shift() as string;
-  const fn = makeRecursiveFunctions(getFunctions(parameters));
+  const method = makeRecursiveMethods(getMethods(parameters));
 
   return {
     value,
     program,
-    fn
+    method
   }
 }
 
-function getFunctions(parameters: string[]) {
+function getMethods(parameters: string[]) {
 
   const loggedAgrumentValues: number[] = [];
 
@@ -22,32 +22,32 @@ function getFunctions(parameters: string[]) {
   }
 
   return parameters.reduce(
-    (fns: IFn[], value: string, index: number) => {
+    (methods: IMethod[], value: string, index: number) => {
 
-      // when --key is found we take next agrumentt as value
+      // when --key is found we take next agrument as value
       // we need to skip taken value
       if (isValueAlreadyLogged(index)) {
-        return fns;
+        return methods;
       }
 
       if (value.startsWith('-') || value.startsWith('--')) {
         const {agrument, agrumentValueIndex} = getAgrumentWithValue(parameters, index);
-        const fn = fns[fns.length - 1];
+        const method = methods[methods.length - 1];
 
-        if (!fn) {
-          return fns;
+        if (!method) {
+          return methods;
         }
 
-        fn.args = fn?.args ? { ...fn.args, ...agrument } : { ...agrument }
+        method.args = method?.args ? { ...method.args, ...agrument } : { ...agrument }
         loggedAgrumentValues.push(agrumentValueIndex);
 
-        return fns;
+        return methods;
       }
 
-      fns.push({name: parameters[index]});
-      return fns;
+      methods.push({name: parameters[index]});
+      return methods;
     },
-    [] as IFn[],
+    [] as IMethod[],
   )
 }
 
@@ -66,33 +66,33 @@ function getAgrumentWithValue(parameters: string[], keyIndex: number) {
   };
 }
 
-function makeRecursiveFunctions(
-  functions: IFn[],
+function makeRecursiveMethods(
+  methods: IMethod[],
 ) {
 
-  const recursiveFunctions = {} as IFn;
-  let target = recursiveFunctions;
+  const recursiveMethods= {} as IMethod;
+  let target = recursiveMethods;
 
-  functions.forEach((fn: IFn, index: number) => {
-    target.fn = fn;
-    target = target.fn;
+  methods.forEach((method: IMethod, index: number) => {
+    target.method = method;
+    target = target.method;
   });
 
-  return recursiveFunctions.fn
+  return recursiveMethods.method;
 }
 
 export interface ICommand {
     value: string;
     program: string;
-    fn?: IFn
+    method?: IMethod
 }
 
 interface IAgrument {
   [id: string]: string;
 }
 
-export interface IFn{
+export interface IMethod{
   name: string;
   args?: IAgrument;
-  fn?: IFn;
+  method?: IMethod;
 }
