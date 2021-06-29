@@ -110,7 +110,7 @@ function help({
             let response: string;
 
             response = `<p>
-                version: ${version}<br/>
+                version: v${version}<br/>
                 description: ${description}
             </p>
             `;
@@ -118,7 +118,7 @@ function help({
             methods.forEach((method) => {
                 const { name, abbreviation } = method.indentifier;
 
-                response = `${response}<br/> ${programName} ${name} : ${method.description}`;
+                response = `${response}<br/> ${programName} ${name}: ${method.description}`;
             });
 
             return Promise.resolve(response);
