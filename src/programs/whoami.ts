@@ -2,6 +2,7 @@ import { Program } from './Program';
 import { ICommand } from '../interpret';
 
 export default ({ info }: { info: string }) => {
+
     return new Program({
         indentifier: {
             name: 'whoami',
@@ -16,9 +17,12 @@ export default ({ info }: { info: string }) => {
                 },
                 description: 'more information',
                 execute(command: ICommand) {
-                    return Promise.resolve(info);
+                    return Promise.resolve(`
+                        shell version: v1<br/>
+                        enviroment description:<br/>
+                        ${info}`);
                 },
-            }
+            },
         ],
     });
 };
