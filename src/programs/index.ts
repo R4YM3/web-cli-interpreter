@@ -1,3 +1,5 @@
 import Whoami from './whoami';
 
-export default [Whoami];
+export const programs = {
+    whoami: Whoami
+}

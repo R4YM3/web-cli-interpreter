@@ -1,5 +1,5 @@
 import { interpret, ICommand } from './interpret';
-import defaultPrograms from './programs';
+export { programs } from './programs'
 
 interface IConfig {
     programs?: any[];
@@ -7,7 +7,7 @@ interface IConfig {
 
 type IDecodedCommand= ICommand | '';
 
-export const init = ({ programs= [] }: IConfig) => (value: string) => {
+export const init = ({ programs = [] }: IConfig) => (value: string) => {
 
     return decode(value).then(run);
 
@@ -25,8 +25,7 @@ export const init = ({ programs= [] }: IConfig) => (value: string) => {
             return Promise.resolve('');
         }
 
-        // should be able to overwrite default..
-        const program = [...defaultPrograms, ...programs].find((prog) => prog.indentifier.name === command.program);
+        const program = [...programs].find((prog) => prog.indentifier.name === command.program);
 
         if (!program) {
             return Promise.resolve(`command not found: ${command.program}`);
