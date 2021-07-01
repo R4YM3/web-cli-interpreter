@@ -1,32 +1,36 @@
-import { ICommand } from '../interpret';
+import { ICommand } from './interpret';
 
-interface Iidentifier {
+interface IIdentifier {
     name: string;
     abbreviation?: string;
 }
 
-interface IProgram {
-    indentifier: Iidentifier;
+export interface IProgramArgs {
+    indentifier: IIdentifier;
     description: string;
     version: string;
     methods: IProgramMethod[];
 }
 
+export interface IProgram extends IProgramArgs  {
+    execute(arg0: ICommand): Promise<string>;
+}
+
 interface IProgramMethod {
-    indentifier: Iidentifier;
+    indentifier: IIdentifier;
     default?: boolean;
     description: string;
     execute(arg0: ICommand): Promise<string>;
 }
 
 export class Program {
-    public indentifier: Iidentifier;
+    public indentifier: IIdentifier;
     private description: string;
     private version: string;
 
     private methods: IProgramMethod[] = [];
 
-    constructor({ indentifier, description, version, methods }: IProgram) {
+    constructor({ indentifier, description, version, methods }: IProgramArgs) {
         this.indentifier = indentifier;
         this.description = description;
         this.version = version;

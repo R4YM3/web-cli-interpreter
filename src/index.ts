@@ -1,13 +1,14 @@
 import { interpret, ICommand } from './interpret';
-export { programs } from './programs'
+import { ProgramManager } from './programs/ProgramManager'
+export { programs }  from './programs'
 
-interface IConfig {
+interface IOptions {
     programs?: any[];
 }
 
 type IDecodedCommand= ICommand | '';
 
-export const init = ({ programs = [] }: IConfig) => (value: string) => {
+export const init = ({ programs: userPrograms = [] }: IOptions) => (value: string) => {
 
     return decode(value).then(run);
 
@@ -25,7 +26,9 @@ export const init = ({ programs = [] }: IConfig) => (value: string) => {
             return Promise.resolve('');
         }
 
-        const program = [...programs].find((prog) => prog.indentifier.name === command.program);
+        const { programs } = ProgramManager([...userPrograms]);
+
+        const program = programs.find((prog) => prog.indentifier.name === command.program);
 
         if (!program) {
             return Promise.resolve(`command not found: ${command.program}`);

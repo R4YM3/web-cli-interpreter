@@ -1,0 +1,57 @@
+import { programs } from './'
+import { Program, IProgram } from '../Program';
+import { ICommand } from '../interpret';
+
+const version = '1.0.0'
+
+export const ProgramManager = (userPrograms: IProgram[]) => {
+
+    const allPrograms = [
+        ...userPrograms
+    ];
+
+    const program = new Program({
+        indentifier: {
+            name: 'program',
+        },
+        version,
+        description: 'install, update and remove programs',
+        methods: [
+            {
+                indentifier: {
+                    name: 'list',
+                    abbreviation: 'l',
+                },
+                description: 'list all programs',
+                execute(command: ICommand) {
+                    const list = allPrograms.reduce((accumulator: string, prog: IProgram): string => {
+                        const { version: programVersion, indentifier : { name }} = prog;
+
+                        return `${accumulator}
+                            <tr>
+                                <td class="pr-5">${name} ${programVersion}</td>
+                            </tr>`;
+                    }, '');
+
+                    const response = (`<ul>${list}</ul>`);
+
+                    return Promise.resolve(response);
+                },
+            },
+            {
+                indentifier: {
+                    name: 'version',
+                    abbreviation: 'v',
+                },
+                description: 'version',
+                execute(command: ICommand) {
+                    return Promise.resolve(`v${version}`);
+                }
+            }
+        ]
+    });
+
+    return {
+        programs: [ ...allPrograms, program]
+    }
+};
