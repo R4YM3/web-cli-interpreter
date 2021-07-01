@@ -43,7 +43,7 @@ export const ProgramManager = (userPrograms: IProgram[]) => {
                     name: 'version',
                     abbreviation: 'v',
                 },
-                description: 'version',
+                description: 'current installed version',
                 execute(command: ICommand) {
                     return Promise.resolve(`v${version}`);
                 }
