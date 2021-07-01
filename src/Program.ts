@@ -121,7 +121,6 @@ function help({
             }, '');
 
             const response = (`
-                <p>Description:</p>
                 <p>${description}</p>
                 <p>Usage:</p>
                 <p>
