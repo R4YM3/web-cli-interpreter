@@ -1,4 +1,4 @@
-import Whoami from './whoami';
+import { Whoami } from './whoami';
 
 export const programs = {
     whoami: Whoami

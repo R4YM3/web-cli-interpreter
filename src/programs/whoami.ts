@@ -1,7 +1,7 @@
 import { Program } from './Program';
 import { ICommand } from '../interpret';
 
-export default ({ info }: { info: string }) => {
+export const Whoami = ({ info }: { info: string }) => {
 
     return new Program({
         indentifier: {
