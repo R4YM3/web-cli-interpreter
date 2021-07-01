@@ -29,7 +29,7 @@ export const Whoami = ({ info }: { info: string }) => {
                     name: 'version',
                     abbreviation: 'v',
                 },
-                description: 'installed version',
+                description: 'current installed version',
                 execute(command: ICommand) {
                     return Promise.resolve(`
                         web-cli-interpreter: v${npmPackage.version}<br/>

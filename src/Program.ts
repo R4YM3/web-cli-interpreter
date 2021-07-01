@@ -116,7 +116,7 @@ function help({
                 return `${accumulator}
                     <tr>
                         <td class="pr-5"><strong>${programName} ${name}</strong></td>
-                        <td>${method.description}</td>
+                        <td><i>${method.description}</i></td>
                     </tr>`;
             }, '');
 
