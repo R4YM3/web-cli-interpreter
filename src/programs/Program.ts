@@ -105,21 +105,26 @@ function help({
             name: 'help',
             abbreviation: 'h',
         },
-        description: 'A program which dentifies the current command line interface',
+        description: 'Help',
         execute() {
-            let response: string;
-
-            response = `<p>
-                version: v${version}<br/>
-                description: ${description}
-            </p>
-            `;
-
-            methods.forEach((method) => {
+            const methodsDocs  = methods.reduce((accumulator: string, method: IProgramMethod): string => {
                 const { name, abbreviation } = method.indentifier;
+                return `${accumulator}
+                    <tr>
+                        <td class="pr-5"><strong>${programName} ${name}</strong></td>
+                        <td>${method.description}</td>
+                    </tr>`;
+            }, '');
 
-                response = `${response}<br/> ${programName} ${name}: ${method.description}`;
-            });
+            const response = (`
+                <p>Description:</p>
+                <p>${description}</p>
+                <p>Usage:</p>
+                <p>
+                    <table>${methodsDocs}</table>
+                </p>
+                <p>Version: v${version}</p>
+            `)
 
             return Promise.resolve(response);
         },

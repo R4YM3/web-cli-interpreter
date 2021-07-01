@@ -1,5 +1,9 @@
+// tslint:disable-next-line
+const npmPackage = require('../../package');
 import { Program } from './Program';
 import { ICommand } from '../interpret';
+
+const version = '1.0.0'
 
 export const Whoami = ({ info }: { info: string }) => {
 
@@ -7,22 +11,32 @@ export const Whoami = ({ info }: { info: string }) => {
         indentifier: {
             name: 'whoami',
         },
-        version: '1',
-        description: 'get information about the current enviroment',
+        version,
+        description: 'A program to get information about the curernt command line interface',
         methods: [
             {
                 indentifier: {
                     name: 'info',
                     abbreviation: 'i',
                 },
-                description: 'more information',
+                description: 'background information',
                 execute(command: ICommand) {
-                    return Promise.resolve(`
-                        shell version: v1<br/>
-                        enviroment description:<br/>
-                        ${info}`);
+                    return Promise.resolve(info);
                 },
             },
-        ],
+            {
+                indentifier: {
+                    name: 'version',
+                    abbreviation: 'v',
+                },
+                description: 'version',
+                execute(command: ICommand) {
+                    return Promise.resolve(`
+                        web-cli-interpreter: v${npmPackage.version}<br/>
+                        whoami: v${version}
+                    `);
+                }
+            }
+        ]
     });
 };
