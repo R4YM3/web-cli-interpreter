@@ -1,24 +1,25 @@
-import { interpret } from '../interpret';
+import { interpret } from "../interpret"
+import { Program } from '../Program';
 
 describe('interpret', () => {
     it('should return correct program', () => {
         const command = 'program';
         expect(interpret(command)).toEqual({
-            fn: undefined,
+            method: undefined,
             program: 'program',
             value: command,
         });
     });
 
     it('should should parse given functions', () => {
-        const command = 'program fn1 fn2 fn3';
+        const command = 'program method1 method2 method3';
         expect(interpret(command)).toEqual({
-            fn: {
-                name: 'fn1',
-                fn: {
-                    name: 'fn2',
-                    fn: {
-                        name: 'fn3',
+            method: {
+                name: 'method1',
+                method: {
+                    name: 'method2',
+                    method: {
+                        name: 'method3',
                     },
                 },
             },
@@ -28,10 +29,10 @@ describe('interpret', () => {
     });
 
     it('should should parse given argruments', () => {
-        const command = 'program fn1 --arg1 value1 -arg2 value2';
+        const command = 'program method1 --arg1 value1 -arg2 value2';
         expect(interpret(command)).toEqual({
-            fn: {
-                name: 'fn1',
+            method: {
+                name: 'method1',
                 args: {
                     arg1: 'value1',
                     arg2: 'value2',
@@ -43,23 +44,23 @@ describe('interpret', () => {
     });
 
     it('should should handle complex command', () => {
-        const command = 'program fn1 --arg1 value1 -arg2 value2 fn2 FN3 --Arg3 value-3 fn4 -arg4 value4';
+        const command = 'program method1 --arg1 value1 -arg2 value2 method2 method3 --Arg3 value-3 method4 -arg4 value4';
         expect(interpret(command)).toEqual({
-            fn: {
-                name: 'fn1',
+            method: {
+                name: 'method1',
                 args: {
                     arg1: 'value1',
                     arg2: 'value2',
                 },
-                fn: {
-                    name: 'fn2',
-                    fn: {
-                        name: 'FN3',
+                method: {
+                    name: 'method2',
+                    method: {
+                        name: 'method3',
                         args: {
                             Arg3: 'value-3',
                         },
-                        fn: {
-                            name: 'fn4',
+                        method: {
+                            name: 'method4',
                             args: {
                                 arg4: 'value4',
                             },
