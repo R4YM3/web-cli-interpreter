@@ -1,6 +1,6 @@
 {
     "name": "web-cli-interpreter",
-    "version": "1.0.0",
+    "version": "0.1.0",
     "description": "A package which will interpreted a given string as command and will run it on installed web-cli-packages.",
     "files": [
         "lib/**/*"
