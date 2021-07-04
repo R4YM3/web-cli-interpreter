@@ -2,6 +2,7 @@ import { interpret, ICommand } from './interpret';
 import { ProgramManager } from './programs/ProgramManager';
 import { IProgram } from './Program';
 export { programs } from './programs';
+export { Program } from './Program';
 
 interface IOptions {
     programs?: IProgram[];
