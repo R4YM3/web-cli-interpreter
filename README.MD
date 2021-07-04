@@ -8,11 +8,7 @@ _note: this project is still under heavy development_
 import { init, programs as defaultPrograms } from "web-cli-interpreter";
 
 const whoami = defaultPrograms.whoami({
-    info: `<p>
-      Spare time project of Raymond Schweers.<br/>
-      To explore, learn and seek new technologies and by doing so creating a handy<br/>
-      command line interface build with: TypeScript, React, and Sass
-    </p>`,
+    info: `<p>information to output on command 'whoami info'</p>`,
 });
 
 const interpret = init({
@@ -21,7 +17,7 @@ const interpret = init({
 
 interpret('whoami info');
 
-```
+``A
 
 ## Interpertation of given string
 A given command should be in the following scheme:
