@@ -4,11 +4,11 @@ A package which will interpretate a given string as a command and will run it on
 
 _note: this project is still under heavy development_
 
-##Installing
+## Installing
 
 ```npm i web-cli-interpreter --save```
 
-##Using it
+## Using it
 
 ```
 import { init, programs as defaultPrograms } from "web-cli-interpreter";
