@@ -1,6 +1,6 @@
 # web-cli-interpreter
 
-A package which will interpreted a given string as a command and will run it on given programs.
+A package which will interpretate a given string as a command and will run it on given programs.
 
 _note: this project is still under heavy development_
 
@@ -19,7 +19,7 @@ const interpret = init({
     programs: [whoami],
 });
 
-interpret(shell.command.value);
+interpret('whoami info');
 
 ```
 
