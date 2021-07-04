@@ -25,10 +25,10 @@ interface IProgramMethod {
 
 export class Program {
     public indentifier: IIdentifier;
-    private description: string;
-    private version: string;
+    public description: string;
+    public version: string;
 
-    private methods: IProgramMethod[] = [];
+    public methods: IProgramMethod[] = [];
 
     constructor({ indentifier, description, version, methods }: IProgramArgs) {
         this.indentifier = indentifier;
