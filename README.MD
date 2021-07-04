@@ -17,7 +17,7 @@ const interpret = init({
 
 interpret('whoami info');
 
-``A
+```
 
 ## Interpertation of given string
 A given command should be in the following scheme:
