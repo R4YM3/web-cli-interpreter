@@ -22,7 +22,7 @@ interpret('whoami info');
 ## Interpertation of given string
 A given command should be in the following scheme:
 
-```program method1 --arg1 arg1value -arg2 arg2value method2 --arg1 value1```
+```program method1 --arg1 value -arg2 value  nested-method-inside-method1 --arg1 value```
 
 tbd..
 
