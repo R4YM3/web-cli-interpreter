@@ -1,39 +1,41 @@
 import { interpret, ICommand } from './interpret';
-import { ProgramManager } from './programs/ProgramManager'
-export { programs }  from './programs'
+import { ProgramManager } from './programs/ProgramManager';
+import { IProgram } from './Program';
+export { programs } from './programs';
 
 interface IOptions {
-    programs?: any[];
+    programs?: IProgram[];
 }
 
-type IDecodedCommand= ICommand | '';
+type IDecodedCommand = ICommand | '';
 
-export const init = ({ programs: userPrograms = [] }: IOptions) => (value: string) => {
+export const init =
+    ({ programs = [] }: IOptions) =>
+    (value: string) => {
+        return decode(value).then((command) => run(command, programs));
+    };
 
-    return decode(value).then(run);
+function decode(val: string): Promise<IDecodedCommand> {
+    if (!val) return Promise.resolve('');
 
-    function decode(val: string): Promise<IDecodedCommand> {
-        if (!val) return Promise.resolve('');
+    const command = interpret(val.replace(/\s+/g, ' '));
+    return Promise.resolve(command);
+}
 
-        const command = interpret(val.replace(/\s+/g, ' '));
-        return Promise.resolve(command);
+function run(command: IDecodedCommand, userPrograms: IProgram[]): Promise<string> {
+    if (!command) return Promise.resolve('');
+
+    if (!command.program || command.program === '') {
+        return Promise.resolve('');
     }
 
-    function run(command: IDecodedCommand): Promise<string> {
-        if (!command) return Promise.resolve('');
+    const { programs } = ProgramManager([...userPrograms]);
 
-        if (!command.program || command.program === '') {
-            return Promise.resolve('');
-        }
+    const program = programs.find((prog) => prog.indentifier.name === command.program);
 
-        const { programs } = ProgramManager([...userPrograms]);
-
-        const program = programs.find((prog) => prog.indentifier.name === command.program);
-
-        if (!program) {
-            return Promise.resolve(`command not found: ${command.program}`);
-        }
-
-        return program.execute(command);
+    if (!program) {
+        return Promise.resolve(`command not found: ${command.program}`);
     }
-};
+
+    return program.execute(command);
+}
