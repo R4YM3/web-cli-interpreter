@@ -26,6 +26,14 @@ A given command should be in the following scheme:
 
 tbd..
 
+## Programs
+Currently this project has the following programs:
+
+- whoami
+- program
+
+```program``` is a program manager, which currently only will list programs, but in the future it will allow user to install (certain) programs.
+
 ## Creating your own programs
 `import { Program } from "web-cli-interpreter";`
 
