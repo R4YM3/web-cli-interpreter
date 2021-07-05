@@ -1,13 +1,13 @@
 {
     "name": "web-cli-interpreter",
-    "version": "0.1.2",
+    "version": "0.1.4",
     "description": "A package which will interpreted a given string as command and will run it on installed web-cli-packages.",
     "files": [
         "lib/**/*"
     ],
     "main": "lib/index.js",
-    "types": "lib/types.d.ts",
     "type": "module",
+    "types": "lib/types.d.ts",
     "scripts": {
         "test": "jest --config jestconfig.json",
         "build": "tsc",
