@@ -1,3 +1,5 @@
+import { ICommand, ICommandMethod } from './types';
+
 // decode srting to a actual command
 // command = program fn --arg value -arg2 value  fn2 -arg1 avlue1
 
@@ -22,7 +24,7 @@ function getMethods(parameters: string[]) {
   }
 
   return parameters.reduce(
-    (methods: IMethod[], value: string, index: number) => {
+    (methods: ICommandMethod[], value: string, index: number) => {
 
       // when --key is found we take next agrument as value
       // we need to skip taken value
@@ -47,7 +49,7 @@ function getMethods(parameters: string[]) {
       methods.push({name: parameters[index]});
       return methods;
     },
-    [] as IMethod[],
+    [] as ICommandMethod[],
   )
 }
 
@@ -67,32 +69,16 @@ function getAgrumentWithValue(parameters: string[], keyIndex: number) {
 }
 
 function makeRecursiveMethods(
-  methods: IMethod[],
+  methods: ICommandMethod[],
 ) {
 
-  const recursiveMethods= {} as IMethod;
+  const recursiveMethods= {} as ICommandMethod;
   let target = recursiveMethods;
 
-  methods.forEach((method: IMethod, index: number) => {
+  methods.forEach((method: ICommandMethod, index: number) => {
     target.method = method;
     target = target.method;
   });
 
   return recursiveMethods.method;
-}
-
-export interface ICommand {
-    value: string;
-    program: string;
-    method?: IMethod
-}
-
-interface IAgrument {
-  [id: string]: string;
-}
-
-export interface IMethod{
-  name: string;
-  args?: IAgrument;
-  method?: IMethod;
 }

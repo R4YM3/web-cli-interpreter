@@ -1,7 +1,7 @@
 // tslint:disable-next-line
 const npmPackage = require('../../package');
 import { Program } from '../Program';
-import { ICommand } from '../interpret';
+import { ICommand } from '../types';
 
 const version = '1.0.0'
 

@@ -1,30 +1,7 @@
-import { ICommand } from './interpret';
-
-interface IIdentifier {
-    name: string;
-    abbreviation?: string;
-}
-
-export interface IProgramArgs {
-    indentifier: IIdentifier;
-    description: string;
-    version: string;
-    methods: IProgramMethod[];
-}
-
-export interface IProgram extends IProgramArgs  {
-    execute(arg0: ICommand): Promise<string>;
-}
-
-interface IProgramMethod {
-    indentifier: IIdentifier;
-    default?: boolean;
-    description: string;
-    execute(arg0: ICommand): Promise<string>;
-}
+import { ICommand, IProgramIdentifier, IProgramArgs, IProgram, IProgramMethod } from './types';
 
 export class Program {
-    public indentifier: IIdentifier;
+    public indentifier: IProgramIdentifier;
     public description: string;
     public version: string;
 
@@ -111,7 +88,7 @@ function help({
         },
         description: 'Help',
         execute() {
-            const methodsDocs  = methods.reduce((accumulator: string, method: IProgramMethod): string => {
+            const methodsDocs = methods.reduce((accumulator: string, method: IProgramMethod): string => {
                 const { name, abbreviation } = method.indentifier;
                 return `${accumulator}
                     <tr>
@@ -120,14 +97,14 @@ function help({
                     </tr>`;
             }, '');
 
-            const response = (`
+            const response = `
                 <p>${description}</p>
                 <p>Usage:</p>
                 <p>
                     <table>${methodsDocs}</table>
                 </p>
                 <p>Version: v${version}</p>
-            `)
+            `;
 
             return Promise.resolve(response);
         },

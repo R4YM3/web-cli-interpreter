@@ -1,6 +1,7 @@
-import { interpret, ICommand } from './interpret';
+import { interpret } from './interpret';
 import { ProgramManager } from './programs/ProgramManager';
-import { IProgram } from './Program';
+import { ICommand, IProgram } from './types';
+
 export { programs } from './programs';
 export { Program } from './Program';
 

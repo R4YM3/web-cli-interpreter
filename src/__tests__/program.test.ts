@@ -1,5 +1,6 @@
 import { init, programs as defaultPrograms } from '../';
-import { Program, IProgram } from '../Program';
+import { Program } from '../Program';
+import { IProgram }  from '../types';
 
 const PROGRAM_NAME = 'test';
 const METHOD_NAME = 'info';
