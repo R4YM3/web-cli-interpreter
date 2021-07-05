@@ -1,14 +1,15 @@
 # web-cli-interpreter
 
-A package which will interpretate a given string as a command and will run it on given programs.
+Interpretates a string as a command and will run it on given programs.
 
 _note: this project is still under heavy development_
+
 
 ## Installing
 
 ```npm i web-cli-interpreter --save```
 
-## Using it
+## How to use
 
 ```
 import { init, programs as defaultPrograms } from "web-cli-interpreter";
@@ -25,12 +26,10 @@ interpret('whoami info');
 
 ```
 
-## Interpertation of given string
+## Command Interpertation
 A given command should be in the following scheme:
 
 ```program method1 --arg1 value -arg2 value  nested-method-inside-method1 --arg1 value```
-
-tbd..
 
 ## Programs
 Currently this project has the following programs:
@@ -44,5 +43,3 @@ Currently this project has the following programs:
 `import { Program } from "web-cli-interpreter";`
 
 Create a new instance and add the program in programs array in init() function.
-
-tbd..
