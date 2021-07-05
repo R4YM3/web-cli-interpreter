@@ -1,5 +1,5 @@
 import { init, programs as defaultPrograms } from '../';
-import { Whoami } from '../programs/whoami';
+import { Whoami } from '../programs/Whoami';
 import { ProgramManagerProgram } from '../programs/ProgramManager';
 import { expectHelpMethod } from './program.test';
 
