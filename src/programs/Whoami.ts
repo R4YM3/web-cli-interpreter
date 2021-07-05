@@ -1,5 +1,5 @@
 // tslint:disable-next-line
-const npmPackage = require('../../package');
+import * as npmPackage  from '../../package.json';
 import { Program } from '../Program';
 import { ICommand } from '../interpret';
 
