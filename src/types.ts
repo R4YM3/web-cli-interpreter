@@ -1,17 +1,14 @@
 export interface ICommand {
     value: string;
     program: string;
-    method?: ICommandMethod;
+    method: string,
+    args: ICommandAgrument;
 }
 
-interface ICommandAgrument {
-    [id: string]: string;
-}
-
-export interface ICommandMethod {
-    name: string;
-    args?: ICommandAgrument;
-    method?: ICommandMethod;
+export interface ICommandAgrument {
+    values: string[];
+    flags: string[];
+    [id: string]: string|boolean|string[];
 }
 
 export interface IProgramIdentifier {
