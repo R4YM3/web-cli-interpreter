@@ -29,7 +29,7 @@ interpret('whoami info');
 ## Command Interpertation
 A given command should be in the following scheme:
 
-```program method1 --arg1 value -arg2 value  nested-method-inside-method1 --arg1 value```
+```command = program method -flags --arg1 {arg1value} {value[0]} --arg2 {arg2value} {values[1]}```
 
 ## Programs
 Currently this project has the following programs:

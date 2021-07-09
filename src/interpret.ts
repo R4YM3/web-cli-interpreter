@@ -2,7 +2,6 @@ import { ICommand, ICommandAgrument } from './types';
 
 // decodes srting to a actual command
 // command = program method --arg1 {arg1value} {value[0]} -flags --arg2 {arg2value} {values[1]}
-//
 
 const parseWords = (words = '') =>
     (words.match(/[^\s"]+|"([^"]*)"/gi) || []).map((word) => word.replace(/^"(.+(?="$))"$/, '$1'));
