@@ -1,6 +1,6 @@
 # web-cli-interpreter
 
-Interpretates a string as a command and will run it on given programs.
+Interprets a string as a command and will run it on given programs.
 
 _note: this project is still under heavy development_
 
