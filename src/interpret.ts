@@ -1,84 +1,66 @@
-import { ICommand, ICommandMethod } from './types';
+import { ICommand, ICommandAgrument } from './types';
 
-// decode srting to a actual command
-// command = program fn --arg value -arg2 value  fn2 -arg1 avlue1
+// decodes srting to a actual command
+// command = program method --arg1 {arg1value} {value[0]} -flags --arg2 {arg2value} {values[1]}
+//
 
-export function interpret(value: string):ICommand {
-  const parameters = value.split(' ') as string[];
-  const program = parameters.shift() as string;
-  const method = makeRecursiveMethods(getMethods(parameters));
+const parseWords = (words = '') =>
+    (words.match(/[^\s"]+|"([^"]*)"/gi) || []).map((word) => word.replace(/^"(.+(?="$))"$/, '$1'));
 
-  return {
-    value,
-    program,
-    method
-  }
+export function interpret(value: string): ICommand {
+    const parameters = parseWords(value) as string[];
+    const program = parameters.shift() as string;
+    const method = parameters.shift() as string;
+    const args = getAgruments(parameters);
+
+    return {
+        value,
+        program,
+        method,
+        args,
+    };
 }
 
-function getMethods(parameters: string[]) {
+function getAgruments(parameters: string[]) {
+    let skipNextInteraction = false;
 
-  const loggedAgrumentValues: number[] = [];
+    return parameters.reduce(
+        (args: ICommandAgrument, parameter: string, index: number) => {
+            // when --key is found we take next agrument as value
+            // we need to skip taken value
+            if (skipNextInteraction) {
+                skipNextInteraction = false;
+                return args;
+            }
 
-  function isValueAlreadyLogged(index: number):boolean {
-    return !!loggedAgrumentValues.find((i: number) => index === i)
-  }
+            if (isFlag(parameter) || isAgrument(parameter)) {
+                const key = parameter.replace(/-/g, '').toLowerCase();
 
-  return parameters.reduce(
-    (methods: ICommandMethod[], value: string, index: number) => {
-
-      // when --key is found we take next agrument as value
-      // we need to skip taken value
-      if (isValueAlreadyLogged(index)) {
-        return methods;
-      }
-
-      if (value.startsWith('-') || value.startsWith('--')) {
-        const {agrument, agrumentValueIndex} = getAgrumentWithValue(parameters, index);
-        const method = methods[methods.length - 1];
-
-        if (!method) {
-          return methods;
-        }
-
-        method.args = method?.args ? { ...method.args, ...agrument } : { ...agrument }
-        loggedAgrumentValues.push(agrumentValueIndex);
-
-        return methods;
-      }
-
-      methods.push({name: parameters[index]});
-      return methods;
-    },
-    [] as ICommandMethod[],
-  )
+                if (isAgrument(parameter)) {
+                    const value = parameters[index + 1];
+                    skipNextInteraction = true;
+                    args[key] = value;
+                    return args;
+                } else {
+                    const flags = key.split("");
+                    args.flags = flags.filter((item:string, pos:number)  => {
+                        return flags.indexOf(item) === pos;
+                    })
+                    return args
+                }
+            } else {
+                args.values.push(parameter);
+                return args;
+            }
+        },
+        { values: [], flags: [] } as ICommandAgrument,
+    );
 }
 
-function getAgrumentWithValue(parameters: string[], keyIndex: number) {
-  const agrumentKey = parameters[keyIndex].replace(/-/g, '');
-  const agrumentValueIndex = keyIndex + 1;
-  const agrumentValue = parameters[agrumentValueIndex];
-
-  const agrument = {
-    [agrumentKey]: agrumentValue,
-  };
-
-  return {
-    agrumentValueIndex,
-    agrument,
-  };
+function isAgrument(str: string) {
+    return str.startsWith('--');
 }
 
-function makeRecursiveMethods(
-  methods: ICommandMethod[],
-) {
-
-  const recursiveMethods= {} as ICommandMethod;
-  let target = recursiveMethods;
-
-  methods.forEach((method: ICommandMethod, index: number) => {
-    target.method = method;
-    target = target.method;
-  });
-
-  return recursiveMethods.method;
+function isFlag(str: string) {
+    return str.startsWith('-');
 }

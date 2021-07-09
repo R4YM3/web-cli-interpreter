@@ -24,7 +24,7 @@ export class Program {
     }
 
     public execute(command: ICommand): Promise<string> {
-        if (!command.method || !command.method.name) {
+        if (!command.method) {
             const defaultMethod = getDefaultMethod(this.methods);
 
             if (defaultMethod) {
@@ -44,12 +44,12 @@ export class Program {
         }
 
         const method = getMethod({
-            indentifier: command.method.name,
+            indentifier: command.method,
             methods: this.methods,
         });
 
         if (!method) {
-            return Promise.resolve(`${command.program} method ${command.method.name} not found`);
+            return Promise.resolve(`${command.program} method ${command.method} not found`);
         }
 
         return method.execute(command);
