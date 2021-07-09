@@ -1,5 +1,5 @@
 // tslint:disable-next-line
-import * as npmPackage  from '../../package.json';
+import { VERSION as INTERPRETER_VERSION } from '../constants';
 import { Program } from '../Program';
 import { ICommand } from '../types';
 
@@ -32,7 +32,7 @@ export const Whoami = ({ info }: { info: string }) => {
                 description: 'current installed version',
                 execute(command: ICommand) {
                     return Promise.resolve(`
-                        web-cli-interpreter: v${npmPackage.version}<br/>
+                        web-cli-interpreter: v${INTERPRETER_VERSION}<br/>
                         whoami: v${version}
                     `);
                 }
