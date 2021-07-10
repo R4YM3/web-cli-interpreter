@@ -1,5 +1,5 @@
-name: web-cli-interpreter
-root: ~/Development/hetwebbureau/web-cli-interpreter
+name: webcli-interpreter
+root: ~/Development/hetwebbureau/webcli-interpreter
 
 # Optional tmux socket
 # socket_name: foo
