@@ -12,32 +12,24 @@ _note: this project is still under heavy development_
 ## How to use
 
 ```
-import { init, programs as defaultPrograms } from "web-cli-interpreter";
 
-const whoami = defaultPrograms.whoami({
-    info: `<p>information to output on command 'whoami info'</p>`,
+import { init, programs as defaultPrograms } from "webcli-interpreter";
+
+export const interpret = init({
+    programs: defaultPrograms
 });
-
-const interpret = init({
-    programs: [whoami],
-});
-
-interpret('whoami info');
 
 ```
 
 ## Command Interpertation
 A given command should be in the following scheme:
 
-```command = program method -flags --arg1 {arg1value} {value[0]} --arg2 {arg2value} {values[1]}```
+```command = program method --arg1={arg1value} --arg2={arg2value}  method2 --method2-arg={arg2value}```
 
 ## Programs
 Currently this project has the following programs:
 
 - whoami
-- program
-
-```program``` is a program manager, which currently only will list programs, but in the future it will allow user to install (certain) programs.
 
 ## Creating your own programs
 `import { Program } from "web-cli-interpreter";`

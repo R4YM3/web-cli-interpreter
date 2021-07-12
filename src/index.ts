@@ -1,6 +1,22 @@
+import { Shell } from './classes/Shell';
+import { Program } from './classes/Program';
+
+export { Shell } from './classes/Shell';
+export { Program } from './classes/Program';
+export { programs }  from './program/all';
+
+export const init = ({ programs = [] }: { programs: Program[] }) => {
+    const shell = new Shell(programs);
+
+    return (value: string) => {
+        return shell.exec(value);
+    };
+}
+
+/*
 import { interpret } from './interpret';
 import { ProgramManager } from './programs/ProgramManager';
-import { ICommand, IProgram } from './types';
+import { ICommand } from './types';
 
 export { programs } from './programs';
 export { Program } from './Program';
@@ -20,7 +36,7 @@ export const init =
 function decode(val: string): Promise<IDecodedCommand> {
     if (!val) return Promise.resolve('');
 
-    const command = interpret(val.replace(/\s+/g, ' '));
+    const command = interpret(val.replace(/\s+/g, ' ')); // remove double spaces
     return Promise.resolve(command);
 }
 
@@ -41,3 +57,4 @@ function run(command: IDecodedCommand, userPrograms: IProgram[]): Promise<string
 
     return program.execute(command);
 }
+*/
