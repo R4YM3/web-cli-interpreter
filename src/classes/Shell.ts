@@ -13,7 +13,7 @@ export class Shell {
         this.programs.push(program);
     }
 
-    exec(value: string) {
+    exec(value: string):Promise<string> {
         if (!value) return Promise.resolve('');
 
         const command = interpret(value);

@@ -7,6 +7,6 @@ export interface ICommand {
 export interface IMethod {
     name: string;
     opts: {
-        [id: string]: string | boolean;
+        [id: string]: string|boolean;
     };
 }

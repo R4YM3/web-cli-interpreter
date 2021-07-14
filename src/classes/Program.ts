@@ -1,35 +1,25 @@
-import { ICommand } from '../types';
+import { ICommand, IMethod } from '../types';
 
 /*
-const program = new Program(...);
-
-program
-  .version('0.0.1')
-  .arg('-n', --number <numbers...>', 'specify numbers')
-  .arg('-l, --letter [letters...]', 'specify letters')
- */
+    usage example: src/program/whoami.ts
+*/
 
 interface IOption {
     abbrv: string | null;
     name: string;
     description: string;
     defaultValue: any;
-    value: null | string;
-}
-
-export interface IExecArgs {
-    command: ICommand;
-    opts: {
-        [id: string]: string;
-    }
 }
 
 export class Program {
     private _slug: string;
     private _description: string | undefined;
     private _version: string | undefined;
+    private _methods: {
+        [id: string]: IOption[];
+    };
     private _options: IOption[];
-    private _exec: (context: IExecArgs) => Promise<string>;
+    private _exec: (command: ICommand) => Promise<string>;
 
     constructor({
         name,
@@ -40,41 +30,44 @@ export class Program {
         name: string;
         description?: string;
         version?: string;
-        exec: (context: IExecArgs) => Promise<string>;
+        exec: (command: ICommand) => Promise<string>;
     }) {
         this._slug = name;
         this._description = description;
         this._version = version;
+        this._methods = {};
         this._options = [];
         this._exec = exec;
     }
 
-    public set name(name: string) {
-        this._slug = name;
-    }
-
-    public get name(): string {
+    public get name() {
         return this._slug;
     }
 
-    public set description(description: string) {
-        this._description = description;
+    public get description() {
+        return this._description;
     }
 
-    public set version(version: string) {
-        this._version = version;
+    public get version() {
+        return this._version;
     }
 
-    public method() {
-        // add method
+    public method(name: string, options: string[][]) {
+        this._addMethod(name);
+        this._addOptions(name, options);
     }
 
-    // to method..
-    public option(flags: string, description: string, defaultValue: string) {
-        this._parseOption(flags, description, defaultValue);
+    private _addMethod(name: string) {
+        this._methods[name] = [];
     }
 
-    private _parseOption(flags: string, description: string, defaultValue: string) {
+    private _addOptions(methodName: string, options: string[][]) {
+        for (const option of options) {
+            this._addOption(methodName, option);
+        }
+    }
+
+    private _addOption(methodName: string, [flags, description, defaultValue]: string[]) {
         let abbrv;
         let name;
 
@@ -89,11 +82,10 @@ export class Program {
             name = getName(flags);
         }
 
-        return this._options.push({
+        return this._methods[methodName].push({
             abbrv,
             name,
             description,
-            value: null,
             defaultValue,
         });
 
@@ -102,30 +94,69 @@ export class Program {
         }
     }
 
-    public exec(command: ICommand) {
+    public exec(command: ICommand): Promise<string> {
         if (this._slug !== command.program) {
-            return;
+            return Promise.resolve('');
         }
 
-        const opts = this._getOpts(command);
+        const parsedCommand = this._parseCommand(command);
 
-        this._exec({
-            command,
-            opts,
-        });
+        return this._exec(parsedCommand);
     }
 
-    // for eeach method..
-    private _getOpts({ args }: ICommand) {
-        return Object.keys(args).reduce((accumulator: {}, key: string) => {
-            const option = this._options.find((opt: IOption) => opt.abbrv === key || opt.name === key);
+    private _parseCommand(command: ICommand): ICommand {
+        return {
+            ...command,
+            methods: command.methods.map((method) => {
+                return this._parseOptions(method);
+            }),
+        };
+    }
 
-            if (option) {
-                option.value = args[key] ? args[key] : option.defaultValue;
-                return { ...accumulator, [option.name]: option.value };
-            }
+    private _parseOptions(method: IMethod): IMethod {
+        let opts = {};
 
-            return accumulator;
-        }, {} as {});
+        for (const key of Object.keys(method.opts)) {
+            opts = { ...opts, ...this._parseOption(method.name, key, method.opts[key]) };
+        }
+
+        return {
+            ...method,
+            opts,
+        };
+    }
+
+    private _parseOption(methodName: string, key: string, val: string | boolean) {
+        const method = this._methods[methodName];
+
+        // unknown method
+        if (!method) {
+            return {
+                [key]: val,
+            };
+        }
+
+        const option = method.find((o) => o.name === key || o.abbrv === key);
+
+        // option is not pre-defined
+        if (!option) {
+            return {
+                [key]: val,
+            };
+        }
+
+        const defaultValue = option.defaultValue ? option.defaultValue : true;
+        const value = val ? val : defaultValue;
+
+        // if set with abbrv, then rename abbrv to name
+        if (key === option.abbrv) {
+            return {
+                [option.name]: value,
+            };
+        }
+
+        return {
+            [key]: value,
+        };
     }
 }

@@ -22,13 +22,27 @@ function getMethods(parameters: string[]) {
     // [ [method, arg1, arg2], [method, arg1, arg2]]
     const methods = parameters.reduce((accumulator: string[][], parameter: string, index: number) => {
         if (parameter.startsWith('-') || parameter.startsWith('--')) {
-            accumulator[accumulator.length].push(parameter);
+            accumulator[accumulator.length - 1].push(parameter);
         } else {
             accumulator.push([parameter]);
         }
         return accumulator;
     }, []);
 
+    /*
+        [
+            {
+                name: 'program-name',
+                opts: {
+                    arg1: 'argvalue',
+                    arg2: true
+                }
+            },
+            ...
+            ...
+        ]
+
+    */
     return methods.map((method) => {
         return method.reduce((accumulator: any, parameter: string, index: number) => {
 
@@ -52,6 +66,6 @@ function strToArg(str: string) {
     const [key, value] = str.split('=');
 
     return {
-        [key.replace(/-/g, '').toLowerCase()]: value ? value : true,
+        [key.replace(/-/g, '').toLowerCase()]: value ? value : '',
     };
 }

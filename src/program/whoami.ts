@@ -1,21 +1,22 @@
 import { VERSION as INTERPRETER_VERSION } from '../constants';
-import { Program, IExecArgs } from '../classes/Program';
+import { Program } from '../classes/Program';
+import { ICommand } from '../types';
 
-const version = '1.0.0'
+const version = '1.0.0';
 
 const program = new Program({
     name: 'whoami',
     description: 'A program to get information about the curernt command line interface',
     version: '1.0.0',
-    exec
+    exec,
 });
 
-program
-  .option('-i, --info', 'background info', 'A program to get information about the curernt command line interface')
+program.method('info', [
+   [ '-i, --info', 'background info', 'A program to get information about the curernt command line interface'],
+]);
 
-function exec({ command, opts }: IExecArgs ) {
-    console.log("COMMAND", command);
-    console.log("OPTS", opts);
+function exec(command: ICommand) {
+    console.log("COMMAND=", command);
     return Promise.resolve('foo');
 }
 
