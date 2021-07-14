@@ -7,12 +7,12 @@ _note: this project is still under heavy development_
 
 ## Installing
 
-```npm i web-cli-interpreter --save```
+```npm i webcli-interpreter --save```
 
 ## How to use
 
 ```
-import { init, programs as defaultPrograms } from "web-cli-interpreter";
+import { init, programs as defaultPrograms } from "webcli-interpreter";
 
 const whoami = defaultPrograms.whoami({
     info: `<p>information to output on command 'whoami info'</p>`,
