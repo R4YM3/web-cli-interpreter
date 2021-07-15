@@ -11,9 +11,12 @@ const program = new Program({
     exec,
 });
 
-program.method('info', [
-   [ '-i, --info', 'background info', 'A program to get information about the curernt command line interface'],
-]);
+program.method({
+    name: 'test',
+    options: [
+       [ '-f, --foo', 'foobar', 'default response'],
+    ]
+});
 
 function exec(command: ICommand) {
     console.log("COMMAND=", command);

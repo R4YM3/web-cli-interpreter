@@ -1,4 +1,5 @@
 import { ICommand, IMethod } from '../types';
+import { DEFAULT_METHOD_KEY, DEFAULT_METHOD_NAME } from '../constants';
 
 /*
     usage example: src/program/whoami.ts
@@ -16,7 +17,10 @@ export class Program {
     private _description: string | undefined;
     private _version: string | undefined;
     private _methods: {
-        [id: string]: IOption[];
+        [id: string]: {
+            isDefault: boolean;
+            options: IOption[];
+        }
     };
     private _options: IOption[];
     private _exec: (command: ICommand) => Promise<string>;
@@ -52,13 +56,16 @@ export class Program {
         return this._version;
     }
 
-    public method(name: string, options: string[][]) {
-        this._addMethod(name);
+    public method({ name, options, isDefault = false}: { name: string, options: string[][], isDefault?: boolean}) {
+        this._addMethod(name, isDefault);
         this._addOptions(name, options);
     }
 
-    private _addMethod(name: string) {
-        this._methods[name] = [];
+    private _addMethod(name: string, isDefault: boolean) {
+        this._methods[name] = {
+            isDefault,
+            options: []
+        }
     }
 
     private _addOptions(methodName: string, options: string[][]) {
@@ -82,7 +89,7 @@ export class Program {
             name = getName(flags);
         }
 
-        return this._methods[methodName].push({
+        return this._methods[methodName].options.push({
             abbrv,
             name,
             description,
@@ -95,6 +102,7 @@ export class Program {
     }
 
     public exec(command: ICommand): Promise<string> {
+
         if (this._slug !== command.program) {
             return Promise.resolve('');
         }
@@ -105,25 +113,57 @@ export class Program {
     }
 
     private _parseCommand(command: ICommand): ICommand {
+
+        const methods = command.methods.map((method) => {
+            return this._parseOptions(method);
+        });
+
+        const defaultMethod = [{
+            name: this._getDefaultMethodName(),
+            opts: {}
+        }]
+
         return {
             ...command,
-            methods: command.methods.map((method) => {
-                return this._parseOptions(method);
-            }),
+            methods: methods.length ? methods : defaultMethod
         };
     }
 
     private _parseOptions(method: IMethod): IMethod {
+        const methodName = method.name === DEFAULT_METHOD_KEY ? this._getDefaultMethodName() : method.name;
+
         let opts = {};
 
+
+        if (!method?.opts) {
+            return {
+                name: methodName,
+                opts,
+            };
+        }
+
         for (const key of Object.keys(method.opts)) {
-            opts = { ...opts, ...this._parseOption(method.name, key, method.opts[key]) };
+            opts = { ...opts, ...this._parseOption(methodName, key, method.opts[key]) };
         }
 
         return {
-            ...method,
+            name: methodName,
             opts,
         };
+    }
+
+    private _getDefaultMethodName() {
+        let defaultName;
+
+        for (const key of Object.keys(this._methods)) {
+            const method = this._methods[key];
+            if (method.isDefault) {
+                defaultName = key;
+                break
+            }
+        }
+
+        return defaultName ? defaultName : DEFAULT_METHOD_NAME;
     }
 
     private _parseOption(methodName: string, key: string, val: string | boolean) {
@@ -136,7 +176,7 @@ export class Program {
             };
         }
 
-        const option = method.find((o) => o.name === key || o.abbrv === key);
+        const option = method.options.find((o) => o.name === key || o.abbrv === key);
 
         // option is not pre-defined
         if (!option) {

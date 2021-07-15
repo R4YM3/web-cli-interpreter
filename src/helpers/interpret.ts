@@ -22,7 +22,16 @@ function getMethods(parameters: string[]) {
     // [ [method, arg1, arg2], [method, arg1, arg2]]
     const methods = parameters.reduce((accumulator: string[][], parameter: string, index: number) => {
         if (parameter.startsWith('-') || parameter.startsWith('--')) {
-            accumulator[accumulator.length - 1].push(parameter);
+
+            if (!accumulator.length) {
+                // arg given but no method
+                accumulator.push([
+                    'defaultMethod',
+                    parameter
+                ]);
+            } else {
+                accumulator[accumulator.length - 1].push(parameter);
+            }
         } else {
             accumulator.push([parameter]);
         }
