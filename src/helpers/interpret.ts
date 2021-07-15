@@ -1,4 +1,4 @@
-import { ICommand, IMethod } from '../types';
+import { ICommand, ICommandMethod } from '../types';
 
 // decodes string to a actual command
 // command = program method --arg1={arg1value} {value[0]} --arg2={arg2value} {values[1]}
@@ -9,7 +9,7 @@ const parseWords = (words = '') =>
 export function interpret(value: string): ICommand {
     const parameters = parseWords(value) as string[];
     const program = parameters.shift() as string;
-    const methods = getMethods(parameters) as IMethod[];
+    const methods = getMethods(parameters) as ICommandMethod[];
 
     return {
         value,
@@ -67,7 +67,7 @@ function getMethods(parameters: string[]) {
             }
 
             return accumulator;
-        }, {} as IMethod);
+        }, {} as ICommandMethod);
     });
 }
 

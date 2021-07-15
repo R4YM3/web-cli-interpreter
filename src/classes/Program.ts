@@ -1,5 +1,6 @@
-import { ICommand, IMethod } from '../types';
+import { ICommand, ICommandMethod } from '../types';
 import { DEFAULT_METHOD_KEY, DEFAULT_METHOD_NAME } from '../constants';
+import { dedent } from '../helpers/string';
 
 /*
     usage example: src/program/whoami.ts
@@ -12,16 +13,21 @@ interface IOption {
     defaultValue: any;
 }
 
+interface IMethod {
+    isDefault: boolean;
+    description: string;
+    options: IOption[];
+}
+
+interface IMethods {
+    [id: string]: IMethod
+}
+
 export class Program {
     private _slug: string;
     private _description: string | undefined;
     private _version: string | undefined;
-    private _methods: {
-        [id: string]: {
-            isDefault: boolean;
-            options: IOption[];
-        }
-    };
+    private _methods: IMethods;
     private _options: IOption[];
     private _exec: (command: ICommand) => Promise<string>;
 
@@ -56,16 +62,27 @@ export class Program {
         return this._version;
     }
 
-    public method({ name, options, isDefault = false}: { name: string, options: string[][], isDefault?: boolean}) {
-        this._addMethod(name, isDefault);
-        this._addOptions(name, options);
+    public method({
+        name,
+        description,
+        options,
+        isDefault = false,
+    }: {
+        name: string;
+        description: string;
+        options?: string[][];
+        isDefault?: boolean;
+    }) {
+        this._addMethod(name, description, isDefault);
+        if (options) this._addOptions(name, options);
     }
 
-    private _addMethod(name: string, isDefault: boolean) {
+    private _addMethod(name: string, description: string, isDefault: boolean) {
         this._methods[name] = {
             isDefault,
-            options: []
-        }
+            description,
+            options: [],
+        };
     }
 
     private _addOptions(methodName: string, options: string[][]) {
@@ -102,38 +119,41 @@ export class Program {
     }
 
     public exec(command: ICommand): Promise<string> {
-
         if (this._slug !== command.program) {
             return Promise.resolve('');
         }
 
         const parsedCommand = this._parseCommand(command);
 
-        return this._exec(parsedCommand);
+        if (parsedCommand.methods[0].name === 'help') {
+            return Promise.resolve(this.help(command).then(res => dedent(res)));
+        }
+
+        return Promise.resolve(this._exec(parsedCommand).then(res => dedent(res)));
     }
 
     private _parseCommand(command: ICommand): ICommand {
-
         const methods = command.methods.map((method) => {
             return this._parseOptions(method);
         });
 
-        const defaultMethod = [{
-            name: this._getDefaultMethodName(),
-            opts: {}
-        }]
+        const defaultMethod = [
+            {
+                name: this._getDefaultMethodName(),
+                opts: {},
+            },
+        ];
 
         return {
             ...command,
-            methods: methods.length ? methods : defaultMethod
+            methods: methods.length ? methods : defaultMethod,
         };
     }
 
-    private _parseOptions(method: IMethod): IMethod {
+    private _parseOptions(method: ICommandMethod): ICommandMethod {
         const methodName = method.name === DEFAULT_METHOD_KEY ? this._getDefaultMethodName() : method.name;
 
         let opts = {};
-
 
         if (!method?.opts) {
             return {
@@ -159,7 +179,7 @@ export class Program {
             const method = this._methods[key];
             if (method.isDefault) {
                 defaultName = key;
-                break
+                break;
             }
         }
 
@@ -199,4 +219,64 @@ export class Program {
             [key]: value,
         };
     }
+
+    public help(command: ICommand):Promise<string> {
+        if (command.methods.length === 2) {
+            const method = command.methods[1];
+            const hasMethod = !!this._methods[method.name];
+
+            if (hasMethod) {
+                return helpMethod(this.name, method.name, this._methods[method.name]);
+            } else {
+                return Promise.resolve(`${method.name} does not exist`);
+            }
+        }
+
+
+        return help(this.name, this._methods, this.version);
+    }
+}
+
+function help(programName: string, methods:IMethods, version: string|undefined) {
+    const title = `Usage: ${programName} <command>`;
+
+    const methodHelp = `${programName} help &lt;command&gt;`
+
+    const methodsList = `where &lt;command&gt; is one of:
+    ${Object.keys(methods).join(', ')}`;
+
+    return Promise.resolve(`${title}
+
+        ${methodHelp}
+
+        ${methodsList}
+
+        ${version && `v${version}`}`)
+}
+
+function helpMethod(programName: string, methodName:string, method: IMethod) {
+    const title = `Usage: ${programName} ${methodName} ${ method.options.length ? '[options]': ''}`;
+    const description = method.description ?  method.description : '';
+
+    let options;
+    for (const option of method.options) {
+        options = `${options ? options : ''}
+        --${option.name}, -${option.abbrv} ${option.description}`
+    }
+
+    if (options) {
+        options = `Options:${options}`;
+    }
+
+    let response = `${title}
+
+        ${description}`;
+
+    if (options) {
+        response = `${response}
+
+        ${options}`
+    }
+
+    return Promise.resolve(response);
 }
