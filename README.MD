@@ -1,4 +1,4 @@
-# web-cli-interpreter
+# webcli-interpreter
 
 Interprets a string as a command and will run it on given programs.
 
