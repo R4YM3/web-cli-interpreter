@@ -24,6 +24,7 @@ export const interpret = init({
 A given command should be in the following scheme:
 
 ```command = program method --arg1={arg1value} --arg2={arg2value}  method2 --method2-arg={arg2value}```
+
 _When no agrument value given, then the value will be `true`_
 
 ## Programs
