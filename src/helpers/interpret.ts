@@ -1,7 +1,7 @@
 import { ICommand, ICommandMethod } from '../types';
 
 // decodes string to a actual command
-// command = program method --arg1={arg1value} {value[0]} --arg2={arg2value} {values[1]}
+// command = program method --method1arg={value} method2 --method2arg={value}
 
 const parseWords = (words = '') =>
     (words.match(/[^\s"]+|"([^"]*)"/gi) || []).map((word) => word.replace(/^"(.+(?="$))"$/, '$1'));
