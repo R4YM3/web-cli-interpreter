@@ -18,6 +18,7 @@ program.method({
 
 program.method({
     name: 'version',
+    isDefault: true,
     description: 'returns version of shell',
 });
 
@@ -42,7 +43,7 @@ const methods = {
     },
 
     version(command:ICommand) {
-        return Promise.resolve(`weblci-interpreter: ${INTERPRETER_VERSION}`)
+        return Promise.resolve(`webcli-interpreter: ${INTERPRETER_VERSION}`)
     }
 }
 
