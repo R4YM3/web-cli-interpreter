@@ -39,7 +39,7 @@ const methods = {
     background(command:ICommand) {
         return Promise.resolve(`Spare time project of Raymond Schweers.
             To explore, learn and seek new technologies and by doing so creating a handy
-            command line interface build with: TypeScript, React, and Tailwindl CSS`)
+            command line interface build with: TypeScript, React, and Tailwind CSS`)
     },
 
     version(command:ICommand) {
