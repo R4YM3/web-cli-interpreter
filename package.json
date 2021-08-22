@@ -1,6 +1,6 @@
 {
     "name": "webcli-interpreter",
-    "version": "0.1.0-alpha.0",
+    "version": "0.1.0-alpha.1",
     "description": "A package which will interpreted a given string as command and will run it on installed web-cli-packages.",
     "files": [
         "lib/**/*"
@@ -12,12 +12,12 @@
         "build": "tsc",
         "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
         "lint": "tslint -p tsconfig.json",
-        "prepare": "npm run build",
+        "prepare": "husky install && npm run create-husky-hook && npm run build",
         "prepublishOnly": "npm test && npm run lint",
         "preversion": "npm run lint",
         "version": "npm run format && git add -A src",
         "postversion": "git push && git push --tags",
-        "postinstall": "husky install"
+        "create-husky-hook": "husky add .husky/pre-commit \"npm test\""
     },
     "repository": {
         "type": "git",
