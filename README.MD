@@ -25,7 +25,7 @@ A given command should be in the following scheme:
 
 ```command = program method --opt1={value} --opt2={value} method2 --opt1={value} --opt2={value}```
 
-_When no agrument value given, then the value will be `true`_
+_When no option value given, then the value will be `true`_
 
 ## Programs
 Currently this project has the following programs:
