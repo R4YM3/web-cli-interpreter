@@ -2,12 +2,13 @@ import { VERSION as INTERPRETER_VERSION } from '../constants';
 import { Program } from '../classes/Program';
 import { ICommand } from '../types';
 
-const version = '1.0.0';
+export const VERSION = '1.0.0';
+export const BACKGROUND = 'Spare time project of Raymond Schweers. To explore, learn and seek new technologies and by doing so creating a handy command line interface build with: TypeScript, React, and Tailwind CSS'
 
 const program = new Program({
     name: 'whoami',
     description: 'A program to get information about the current command line interface',
-    version: '1.0.0',
+    version: VERSION,
     exec,
 });
 
@@ -37,9 +38,7 @@ function exec(command: ICommand) {
 const methods = {
 
     background(command:ICommand) {
-        return Promise.resolve(`Spare time project of Raymond Schweers.
-            To explore, learn and seek new technologies and by doing so creating a handy
-            command line interface build with: TypeScript, React, and Tailwind CSS`)
+        return Promise.resolve(BACKGROUND)
     },
 
     version(command:ICommand) {

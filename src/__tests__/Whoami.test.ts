@@ -1,34 +1,27 @@
+import { VERSION as INTERPRETER_VERSION } from '../constants';
 import { init, programs as defaultPrograms } from '../';
-import { Whoami } from '../programs/Whoami';
-import { expectHelpMethod } from './program.test'
-
-const FAKE_INFO = 'FAKE_INFO';
-
-const whoami = defaultPrograms.whoami({
-    info: FAKE_INFO,
-});
+import { whoami, VERSION as WHOAMI_VERSION, BACKGROUND as WHOAMI_BACKGROUND } from '../program/whoami';
 
 export const interpret = init({
-    programs: [whoami],
+    programs: [defaultPrograms.whoami],
 });
-
-const expectWhoamiHelp = () => expectHelpMethod(interpret, whoami)
 
 describe('whoami', () => {
-    it('should return help as default', expectWhoamiHelp);
-
-    it('should return help', expectWhoamiHelp);
-
-    it('should return info', () => {
-        interpret('whoami info').then((res) => {
-            expect(res).toContain(FAKE_INFO);
+    it('should return help as default', ()  => {
+        interpret('whoami').then((res) => {
+            expect(res).toContain(`webcli-interpreter: ${INTERPRETER_VERSION}`);
         });
     });
 
-    it('should return version', () => {
-        interpret('whoami').then((res) => {
-            expect(res).toContain(whoami.version);
+    it('should return help', () => {
+        interpret('whoami help').then((res) => {
+            expect(res).toContain(WHOAMI_VERSION);
+        });
+    });
+
+    it('should return background', () => {
+        interpret('whoami background').then((res) => {
+            expect(res).toContain(WHOAMI_BACKGROUND);
         });
     });
 });
-
