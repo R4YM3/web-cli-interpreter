@@ -16,7 +16,8 @@
         "prepublishOnly": "npm test && npm run lint",
         "preversion": "npm run lint",
         "version": "npm run format && git add -A src",
-        "postversion": "git push && git push --tags"
+        "postversion": "git push && git push --tags",
+        "postinstall": "husky install"
     },
     "repository": {
         "type": "git",
@@ -30,6 +31,7 @@
     "homepage": "https://github.com/R4YM3/web-cli-interpreter#readme",
     "devDependencies": {
         "@types/jest": "26.0.23",
+        "husky": "^7.0.1",
         "jest": "27.0.5",
         "prettier": "2.3.1",
         "ts-jest": "27.0.3",
