@@ -23,7 +23,7 @@ export const interpret = init({
 ## Command Interpertation
 A given command should be in the following scheme:
 
-```command = program method --opt1={value} --opt2={value} method2 --opt1={value} --opt2={value}```
+```program method --opt1={value} --opt2={value} method2 --opt1={value} --opt2={value}```
 
 _When no option value given, then the value will be `true`_
 
