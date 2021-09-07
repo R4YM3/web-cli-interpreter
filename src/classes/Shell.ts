@@ -20,7 +20,7 @@ export class Shell {
         const program = this.programs.find(p => p.name === command.program);
 
         if (!program) {
-            return Promise.resolve(`<strong>${command.program}</stong> not found`)
+            return Promise.resolve(`<span><strong>${command.program}</strong> not found</span>`)
         }
 
         return program.exec(command);
