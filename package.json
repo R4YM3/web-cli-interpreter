@@ -1,6 +1,6 @@
 {
     "name": "webcli-interpreter",
-    "version": "0.1.0-alpha.1",
+    "version": "0.1.0-alpha.2",
     "description": "A package which will interpreted a given string as command and will run it on installed web-cli-packages.",
     "keywords": ["webcli", "interpreter", "cli"],
     "files": [
